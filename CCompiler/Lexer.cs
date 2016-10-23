@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -69,6 +70,11 @@ namespace CCompiler
                         }else if (char.IsWhiteSpace(currentChar))
                         {
                             currentChar = GetCurrentSymbol();
+                        }else if (currentChar.Equals('#'))
+                        {
+                            lexeme += currentChar;
+                            currentChar = GetCurrentSymbol();
+                            state = 8;
                         }
                         break;
 
@@ -237,6 +243,35 @@ namespace CCompiler
                                 Line = currentLine,
                                 Type = TokenTypes.NUMBER_LITERAL
                             };
+                        }
+                        break;
+                    case 8:
+                        if (char.IsDigit(currentChar) || currentChar.Equals('-'))
+                        {
+                            lexeme += currentChar;
+                            currentChar = GetCurrentSymbol();
+                        }
+                        else
+                        {
+                            if (currentChar.Equals('#'))
+                            {
+                                var substring = lexeme.Substring(1);
+                                DateTime expectedDate;
+                                if (DateTime.TryParseExact(substring, "dd-MM-yyyy", new CultureInfo("en-US"),
+                                    DateTimeStyles.None, out expectedDate))
+                                {
+                                    lexeme += currentChar;
+                                    return new Token()
+                                    {
+                                        Column = currentColumn,
+                                        Lexeme = lexeme,
+                                        Line = currentLine,
+                                        Type = TokenTypes.TYPE_DATE
+                                    };
+                                }
+                                throw new Exception("Incorrect date format");
+                            }
+                            throw new Exception("Incomplete statement");
                         }
                         break;
                 }

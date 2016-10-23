@@ -13,6 +13,7 @@ namespace CCompiler
             var lex = new Lexer(@"int main () {
                                     int ar[] = {0,1,2}; 
                                     int counter = 0x72J;
+                                    date d = #019-20-2016#;
                                     counter--;
                                     if(counter < 69 && counter > 1){
                                         counter <<= 1;
