@@ -49,7 +49,6 @@ namespace CCompiler
                         {
                             lexeme += currentChar;
                             state = 3;
-                            currentChar = GetCurrentSymbol();
                         }
                         else if (currentChar == '\0')
                         {
@@ -75,6 +74,10 @@ namespace CCompiler
                         }
                         else
                         {
+                            if (!char.IsWhiteSpace(currentChar))
+                            {
+                                _currentPointer--;
+                            }
                             return new Token()
                             {
                                 Column = currentColumn,
@@ -93,6 +96,10 @@ namespace CCompiler
                         }
                         else
                         {
+                            if (!char.IsWhiteSpace(currentChar))
+                            {
+                                _currentPointer--;
+                            }
                             return new Token()
                             {
                                 Column = currentColumn,

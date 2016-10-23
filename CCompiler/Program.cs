@@ -13,7 +13,7 @@ namespace CCompiler
             //var lex = new Lexer(@"float shazam = 69;
             //                        cont = cont + 1;
             //cont2 = 0;");
-            var lex = new Lexer("shazam 2042\nprint");
+            var lex = new Lexer(" int main () {\n int ar[] = {0,1,2};\n return 0;\n}");
             var currentToken = lex.GetNextToken();
             while (currentToken.Type != TokenTypes.EOF)
             {
