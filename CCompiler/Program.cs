@@ -15,9 +15,13 @@ namespace CCompiler
             //cont2 = 0;");
             var lex = new Lexer(@"int main () {
                                     int ar[] = {0,1,2}; 
-                                    int counter = 0;
+                                    int counter = 0x;
                                     counter--;
-                                    counter /= 1;
+                                    if(counter < 69 && counter > 1){
+                                        counter <<= 1;
+                                    }else{
+                                        counter = 1;
+                                    }
                                     return 0;
                                     }");
             var currentToken = lex.GetNextToken();

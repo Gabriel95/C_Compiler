@@ -1,8 +1,10 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace CCompiler
@@ -42,7 +44,7 @@ namespace CCompiler
                         else if (char.IsDigit(currentChar))
                         {
                             lexeme += currentChar;
-                            state = 2;
+                            state = currentChar.Equals('0') ? 5 : 2;
                             currentChar = GetCurrentSymbol();
                         }
                         else if (Dictionaries.SingleLengthOperatorDictionary.ContainsKey(currentChar.ToString()))
@@ -117,19 +119,29 @@ namespace CCompiler
                         break;
                     case 3:
 
-                        if (Dictionaries.SingleLengthOperatorDictionary.ContainsKey(currentChar.ToString()) && !currentChar.Equals('~'))
+                        if (!currentChar.Equals('~'))
                         {
                             var tempChar = currentChar;
                             currentChar = GetCurrentSymbol();
                             if (currentChar.Equals(tempChar) || currentChar.Equals('='))
                             {
+                                var isThreeLength = false;
                                 lexeme += currentChar;
+                                if (lexeme.Equals("<<") || lexeme.Equals(">>"))
+                                {
+                                    currentChar = GetCurrentSymbol();
+                                    if (currentChar.Equals('='))
+                                    {
+                                        lexeme += currentChar;
+                                        isThreeLength = true;
+                                    }
+                                }
                                 return new Token()
                                 {
                                     Column = currentColumn,
                                     Line = currentLine,
                                     Lexeme = lexeme,
-                                    Type = Dictionaries.TwoLengthOperatorDictionary[lexeme]
+                                    Type = isThreeLength ? Dictionaries.ThreeLengthOperatorDictionary[lexeme] : Dictionaries.TwoLengthOperatorDictionary[lexeme]
                                 };
                             }
                         }
@@ -149,6 +161,52 @@ namespace CCompiler
                             Line = currentLine,
                             Type = Dictionaries.SymbolDictionary[lexeme]
                         };
+                    case 5:
+                        if (currentChar.Equals('x') || currentChar.Equals('X'))
+                        {
+                            lexeme += currentChar;
+                            state = 6;
+                            currentChar = GetCurrentSymbol();
+                        }
+                        else if (currentChar.IsOct())
+                        {
+                            lexeme += currentChar;
+                            state = 7;
+                            currentChar = GetCurrentSymbol();
+                        }
+                        else
+                        {
+                            state = 2;
+                        }
+                        break;
+                    case 6:
+                        if (currentChar.IsHex())
+                        {
+                            lexeme += currentChar;
+                            currentChar = GetCurrentSymbol();
+                        }
+                        else 
+                        {
+                            if (lexeme.Equals("0x") || lexeme.Equals("0X"))
+                            {
+                                throw new Exception();
+                            }
+
+                            if (!char.IsWhiteSpace(currentChar))
+                            {
+                                _currentPointer--;
+                            }
+
+                            return new Token()
+                            {
+                                Column = currentColumn,
+                                Lexeme = lexeme,
+                                Line = currentLine,
+                                Type = TokenTypes.NUMBER_LITERAL
+                            };
+
+                        }
+                        break;
                 }
             }
         }

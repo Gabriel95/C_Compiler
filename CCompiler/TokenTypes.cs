@@ -76,6 +76,8 @@ namespace CCompiler
         TK_SEMICOLON,
         TK_STRUCTURE_DEREFERENCE,
         TK_HASHTAG,
-        TK_INCLUDE
+        TK_INCLUDE,
+        KW_ELSE,
+        TK_COLON
     }
 }

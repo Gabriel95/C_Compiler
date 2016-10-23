@@ -19,6 +19,7 @@ namespace CCompiler
             {",",TokenTypes.TK_COMMA},
             {".",TokenTypes.TK_PERIOD},
             {";",TokenTypes.TK_SEMICOLON},
+            {":",TokenTypes.TK_COLON}
         };
 
         public static readonly Dictionary<string, TokenTypes> KeyWordDictionary = new Dictionary<string, TokenTypes>
@@ -42,6 +43,7 @@ namespace CCompiler
             {"break", TokenTypes.KW_BREAK},
             {"continue", TokenTypes.KW_CONTINUE},
             {"void", TokenTypes.KW_VOID},
+            {"else",TokenTypes.KW_ELSE}
         };
 
         public static readonly Dictionary<string, TokenTypes> SingleLengthOperatorDictionary = new Dictionary
@@ -81,6 +83,12 @@ namespace CCompiler
             {"|=",TokenTypes.ASOP_OR},
             {"++",TokenTypes.AOP_INCREMENT},
             {"--",TokenTypes.AOP_DECREMENT},
+        };
+
+        public static readonly Dictionary<string, TokenTypes> ThreeLengthOperatorDictionary = new Dictionary <string, TokenTypes>()
+        {
+            {"<<=",TokenTypes.ASOP_LEFT_SHIFT},
+            {">>=",TokenTypes.ASOP_RIGHT_SHIFT}
         };
     }
 }
