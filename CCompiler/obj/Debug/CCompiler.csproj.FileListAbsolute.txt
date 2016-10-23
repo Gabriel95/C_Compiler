@@ -1,0 +1,6 @@
+c:\users\gabriel paz\documents\visual studio 2015\Projects\CCompiler\CCompiler\bin\Debug\CCompiler.exe.config
+c:\users\gabriel paz\documents\visual studio 2015\Projects\CCompiler\CCompiler\bin\Debug\CCompiler.exe
+c:\users\gabriel paz\documents\visual studio 2015\Projects\CCompiler\CCompiler\bin\Debug\CCompiler.pdb
+c:\users\gabriel paz\documents\visual studio 2015\Projects\CCompiler\CCompiler\obj\Debug\CCompiler.csprojResolveAssemblyReference.cache
+c:\users\gabriel paz\documents\visual studio 2015\Projects\CCompiler\CCompiler\obj\Debug\CCompiler.exe
+c:\users\gabriel paz\documents\visual studio 2015\Projects\CCompiler\CCompiler\obj\Debug\CCompiler.pdb
