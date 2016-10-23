@@ -176,7 +176,17 @@ namespace CCompiler
                         }
                         else
                         {
-                            state = 2;
+                            if (!char.IsWhiteSpace(currentChar))
+                            {
+                                _currentPointer--;
+                            }
+                            return new Token()
+                            {
+                                Column = currentColumn,
+                                Lexeme = lexeme,
+                                Line = currentLine,
+                                Type = TokenTypes.NUMBER_LITERAL
+                            };
                         }
                         break;
                     case 6:
@@ -205,6 +215,28 @@ namespace CCompiler
                                 Type = TokenTypes.NUMBER_LITERAL
                             };
 
+                        }
+                        break;
+                    case 7:
+                        if (currentChar.IsOct())
+                        {
+                            lexeme += currentChar;
+                            currentChar = GetCurrentSymbol();
+                        }
+                        else
+                        {
+                            if (!char.IsWhiteSpace(currentChar))
+                            {
+                                _currentPointer--;
+                            }
+
+                            return new Token()
+                            {
+                                Column = currentColumn,
+                                Lexeme = lexeme,
+                                Line = currentLine,
+                                Type = TokenTypes.NUMBER_LITERAL
+                            };
                         }
                         break;
                 }

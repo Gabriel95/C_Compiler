@@ -10,12 +10,9 @@ namespace CCompiler
     {
         static void Main(string[] args)
         {
-            //var lex = new Lexer(@"float shazam = 69;
-            //                        cont = cont + 1;
-            //cont2 = 0;");
             var lex = new Lexer(@"int main () {
                                     int ar[] = {0,1,2}; 
-                                    int counter = 0x;
+                                    int counter = 0x72J;
                                     counter--;
                                     if(counter < 69 && counter > 1){
                                         counter <<= 1;
