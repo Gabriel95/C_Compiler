@@ -45,10 +45,15 @@ namespace CCompiler
                             state = 2;
                             currentChar = GetCurrentSymbol();
                         }
-                        else if (SymbolDictionary.SDictionary.ContainsKey(currentChar.ToString()))
+                        else if (Dictionaries.SingleLengthOperatorDictionary.ContainsKey(currentChar.ToString()))
                         {
                             lexeme += currentChar;
                             state = 3;
+                        }
+                        else if (Dictionaries.SymbolDictionary.ContainsKey(currentChar.ToString()))
+                        {
+                            lexeme += currentChar;
+                            state = 4;
                         }
                         else if (currentChar == '\0')
                         {
@@ -83,10 +88,11 @@ namespace CCompiler
                                 Column = currentColumn,
                                 Lexeme = lexeme,
                                 Line = currentLine,
-                                Type = KeyWordDictionary.KwDictionary.ContainsKey(lexeme) ? KeyWordDictionary.KwDictionary[lexeme] : TokenTypes.ID
+                                Type = Dictionaries.KeyWordDictionary.ContainsKey(lexeme) ? Dictionaries.KeyWordDictionary[lexeme] : TokenTypes.ID
                             };
                         }
                         break;
+
                     case 2:
                         if (char.IsDigit(currentChar))
                         {
@@ -110,14 +116,39 @@ namespace CCompiler
                         }
                         break;
                     case 3:
+
+                        if (Dictionaries.SingleLengthOperatorDictionary.ContainsKey(currentChar.ToString()) && !currentChar.Equals('~'))
+                        {
+                            var tempChar = currentChar;
+                            currentChar = GetCurrentSymbol();
+                            if (currentChar.Equals(tempChar) || currentChar.Equals('='))
+                            {
+                                lexeme += currentChar;
+                                return new Token()
+                                {
+                                    Column = currentColumn,
+                                    Line = currentLine,
+                                    Lexeme = lexeme,
+                                    Type = Dictionaries.TwoLengthOperatorDictionary[lexeme]
+                                };
+                            }
+                        }
+
                         return new Token()
                         {
                             Column = currentColumn,
                             Lexeme = lexeme,
                             Line = currentLine,
-                            Type = SymbolDictionary.SDictionary[lexeme]
+                            Type = Dictionaries.SingleLengthOperatorDictionary[lexeme]
                         };
-                        break;
+                    case 4:
+                        return new Token()
+                        {
+                            Column = currentColumn,
+                            Lexeme = lexeme,
+                            Line = currentLine,
+                            Type = Dictionaries.SymbolDictionary[lexeme]
+                        };
                 }
             }
         }

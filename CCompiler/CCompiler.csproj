@@ -43,11 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KeyWordDictionary.cs" />
     <Compile Include="Lexer.cs" />
+    <Compile Include="Dictionaries.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SymbolDictionary.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="TokenTypes.cs" />
   </ItemGroup>
