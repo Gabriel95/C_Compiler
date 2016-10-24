@@ -246,13 +246,14 @@ namespace CCompiler
                         }
                         break;
                     case 7:
-                        if (currentChar.IsOct())
+                        if (char.IsDigit(currentChar))
                         {
                             lexeme += currentChar;
                             currentChar = GetCurrentSymbol();
                         }
                         else if (currentChar.Equals('u') || currentChar.Equals('U') || currentChar.Equals('l') || currentChar.Equals('L'))
                         {
+                            var prev_lexeme = lexeme;
                             var startedWithU = currentChar.Equals('u') || currentChar.Equals('U');
                             lexeme += currentChar;
                             currentChar = GetCurrentSymbol();
@@ -263,6 +264,10 @@ namespace CCompiler
                                     lexeme += currentChar;
                                     currentChar = GetCurrentSymbol();
                                 }
+                            }
+                            if (!prev_lexeme.IsOctal())
+                            {
+                                throw new Exception("Invalid Octal");
                             }
                             if (!char.IsWhiteSpace(currentChar) && currentChar != '\0' )
                             {
@@ -279,6 +284,11 @@ namespace CCompiler
                         }
                         else
                         {
+                            if (!lexeme.IsOctal())
+                            {
+                                throw new Exception("Invalid Octal");
+                            }
+
                             if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                             {
                                 _currentPointer--;

@@ -20,5 +20,10 @@ namespace CCompiler
         {
             return Regex.IsMatch(c.ToString(), "^[0-7]+$");
         }
+
+        public static bool IsOctal(this string text)
+        {
+            return Regex.IsMatch(text, "^[0-7]+$");
+        }
     }
 }
