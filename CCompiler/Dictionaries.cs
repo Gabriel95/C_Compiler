@@ -43,7 +43,9 @@ namespace CCompiler
             {"break", TokenTypes.KW_BREAK},
             {"continue", TokenTypes.KW_CONTINUE},
             {"void", TokenTypes.KW_VOID},
-            {"else",TokenTypes.KW_ELSE}
+            {"else",TokenTypes.KW_ELSE},
+            {"false", TokenTypes.KW_FALSE},
+            {"true",TokenTypes.KW_TRUE}
         };
 
         public static readonly Dictionary<string, TokenTypes> SingleLengthOperatorDictionary = new Dictionary
@@ -90,5 +92,20 @@ namespace CCompiler
             {"<<=",TokenTypes.ASOP_LEFT_SHIFT},
             {">>=",TokenTypes.ASOP_RIGHT_SHIFT}
         };
+
+        public static List<string> EscapeList = new List<string>()
+        {
+            "\\\\",
+            "\\\'",
+            "\\\"",
+            "\\?",
+            "\\a",
+            "\\b",
+            "\\f",
+            "\\n",
+            "\\r",
+            "\\t",
+            "\\v"
+        }; 
     }
 }
