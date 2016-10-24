@@ -288,7 +288,6 @@ namespace CCompiler
                             {
                                 throw new Exception("Invalid Octal");
                             }
-
                             if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                             {
                                 _currentPointer--;
