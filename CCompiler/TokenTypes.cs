@@ -81,6 +81,7 @@ namespace CCompiler
         TK_HASHTAG,
         TK_INCLUDE,
         KW_ELSE,
-        TK_COLON
+        TK_COLON,
+        OP_ARROW
     }
 }

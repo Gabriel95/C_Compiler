@@ -163,6 +163,17 @@ namespace CCompiler
                         {
                             var tempChar = currentChar;
                             currentChar = GetCurrentSymbol();
+                            if ((lexeme + currentChar).Equals("->"))
+                            {
+                                lexeme += currentChar;
+                                return new Token()
+                                {
+                                    Column = currentColumn,
+                                    Line = currentLine,
+                                    Lexeme = lexeme,
+                                    Type = Dictionaries.TwoLengthOperatorDictionary[lexeme]
+                                };
+                            }
                             if (currentChar.Equals(tempChar) || currentChar.Equals('='))
                             {
                                 var isThreeLength = false;

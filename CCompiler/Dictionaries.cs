@@ -86,6 +86,7 @@ namespace CCompiler
             {"|=",TokenTypes.ASOP_OR},
             {"++",TokenTypes.AOP_INCREMENT},
             {"--",TokenTypes.AOP_DECREMENT},
+            {"->",TokenTypes.OP_ARROW}
         };
 
         public static readonly Dictionary<string, TokenTypes> ThreeLengthOperatorDictionary = new Dictionary <string, TokenTypes>()

@@ -12,11 +12,11 @@ namespace CCompiler
         {
             var lex = new Lexer(@"int main () {
                                                 int ar[] = {0,1,2}; 
-                                                int counter = 018L;
+                                                int counter = 01L;
                                                 float f = 10000.69;
                                                 date d = #09-02-2016#;
                                                 char ch = '$';
-                                                counter--;
+                                                counter->shazam;
                                                 if(counter < 69 && counter > 1){
                                                     counter <<= 1;
                                                 }else{
