@@ -45,7 +45,8 @@ namespace CCompiler
             {"void", TokenTypes.KW_VOID},
             {"else",TokenTypes.KW_ELSE},
             {"false", TokenTypes.KW_FALSE},
-            {"true",TokenTypes.KW_TRUE}
+            {"true",TokenTypes.KW_TRUE},
+            {"#include",TokenTypes.TK_INCLUDE}
         };
 
         public static readonly Dictionary<string, TokenTypes> SingleLengthOperatorDictionary = new Dictionary

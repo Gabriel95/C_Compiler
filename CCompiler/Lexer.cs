@@ -71,7 +71,8 @@ namespace CCompiler
                             lexeme += currentChar;
                             currentChar = GetCurrentSymbol();
                             state = 8;
-                        }else if (currentChar == '\'')
+                        }
+                        else if (currentChar == '\'')
                         {
                             lexeme += currentChar;
                             currentChar = GetCurrentSymbol();
@@ -88,7 +89,7 @@ namespace CCompiler
                         }
                         else
                         {
-                            if (!char.IsWhiteSpace(currentChar)&& currentChar != '\0')
+                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                             {
                                 _currentPointer--;
                             }
@@ -122,7 +123,7 @@ namespace CCompiler
                                     currentChar = GetCurrentSymbol();
                                 }
                             }        
-                            if (!char.IsWhiteSpace(currentChar))
+                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                             {
                                 _currentPointer--;
                             }
@@ -143,7 +144,7 @@ namespace CCompiler
                         }
                         else
                         {
-                            if (!char.IsWhiteSpace(currentChar))
+                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                             {
                                 _currentPointer--;
                             }
@@ -215,7 +216,7 @@ namespace CCompiler
                         }
                         else
                         {
-                            if (!char.IsWhiteSpace(currentChar))
+                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0' )
                             {
                                 _currentPointer--;
                             }
@@ -263,7 +264,7 @@ namespace CCompiler
                                     currentChar = GetCurrentSymbol();
                                 }
                             }
-                            if (!char.IsWhiteSpace(currentChar))
+                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0' )
                             {
                                 _currentPointer--;
                             }
@@ -278,7 +279,7 @@ namespace CCompiler
                         }
                         else
                         {
-                            if (!char.IsWhiteSpace(currentChar))
+                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                             {
                                 _currentPointer--;
                             }
@@ -297,6 +298,12 @@ namespace CCompiler
                         {
                             lexeme += currentChar;
                             currentChar = GetCurrentSymbol();
+                        }
+                        else if (currentChar.Equals('i'))
+                        {
+                            lexeme += currentChar;
+                            currentChar = GetCurrentSymbol();
+                            state = 1;
                         }
                         else
                         {
@@ -333,7 +340,7 @@ namespace CCompiler
                             {
                                 throw new Exception("Float can't end with \".\"");
                             }
-                            if (!char.IsWhiteSpace(currentChar))
+                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0' )
                             {
                                 _currentPointer--;
                             }

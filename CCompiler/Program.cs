@@ -25,7 +25,7 @@ namespace CCompiler
             //forreasons
             //                                    return 0;
             //                                    }");
-            var lex = new Lexer(@"bool b = true");
+            var lex = new Lexer(@"#include");
             var currentToken = lex.GetNextToken();
             while (currentToken.Type != TokenTypes.EOF)
             {
