@@ -78,6 +78,12 @@ namespace CCompiler
                             currentChar = GetCurrentSymbol();
                             state = 10;
                         }
+                        else if (currentChar == '\"')
+                        {
+                            lexeme += currentChar;
+                            currentChar = GetCurrentSymbol();
+                            state = 11;
+                        }
                         break;
 
                     case 1:
@@ -110,7 +116,7 @@ namespace CCompiler
                             state = 2;
                             currentChar = GetCurrentSymbol();
                         }
-                        else if (currentChar.Equals('u')||currentChar.Equals('U') || currentChar.Equals('l') || currentChar.Equals('L'))
+                        else if (currentChar.Equals('u') || currentChar.Equals('U') || currentChar.Equals('l') || currentChar.Equals('L'))
                         {
                             var startedWithU = currentChar.Equals('u') || currentChar.Equals('U');
                             lexeme += currentChar;
@@ -122,7 +128,7 @@ namespace CCompiler
                                     lexeme += currentChar;
                                     currentChar = GetCurrentSymbol();
                                 }
-                            }        
+                            }
                             if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                             {
                                 _currentPointer--;
@@ -225,9 +231,15 @@ namespace CCompiler
                             state = 7;
                             currentChar = GetCurrentSymbol();
                         }
+                        else if (currentChar.Equals('.'))
+                        {
+                            lexeme += currentChar;
+                            state = 9;
+                            currentChar = GetCurrentSymbol();
+                        }
                         else
                         {
-                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0' )
+                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                             {
                                 _currentPointer--;
                             }
@@ -246,7 +258,7 @@ namespace CCompiler
                             lexeme += currentChar;
                             currentChar = GetCurrentSymbol();
                         }
-                        else 
+                        else
                         {
                             if (lexeme.Equals("0x") || lexeme.Equals("0X"))
                             {
@@ -280,7 +292,7 @@ namespace CCompiler
                             {
                                 throw new Exception("Invalid Octal");
                             }
-                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0' )
+                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                             {
                                 _currentPointer--;
                             }
@@ -360,7 +372,7 @@ namespace CCompiler
                             {
                                 throw new Exception("Float can't end with \".\"");
                             }
-                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0' )
+                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                             {
                                 _currentPointer--;
                             }
@@ -392,6 +404,41 @@ namespace CCompiler
                         }
                         lexeme += currentChar;
                         currentChar = GetCurrentSymbol();
+                        break;
+                    case 11:
+                        if (currentChar == '\0')
+                        {
+                            throw new Exception("Unclosed \"");
+                        }
+                        if (currentChar == '"')
+                        {
+                            lexeme += currentChar;
+                            return new Token()
+                            {
+                                Column = currentColumn,
+                                Lexeme = lexeme,
+                                Line = currentLine,
+                                Type = TokenTypes.STRING_LITERAL
+                            };
+
+                        }
+                        if (currentChar.Equals('\\'))
+                        {
+                            var temp = currentChar.ToString();
+                            currentChar = GetCurrentSymbol();
+                            temp += currentChar;
+                            currentChar = GetCurrentSymbol(); ;
+                            lexeme += temp;
+                            if (!Dictionaries.EscapeList.Contains(temp))
+                            {
+                                throw new Exception();
+                            }
+                        }
+                        else
+                        {
+                            lexeme += currentChar;
+                            currentChar = GetCurrentSymbol();
+                        }
                         break;
                 }
             }
