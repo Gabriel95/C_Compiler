@@ -82,6 +82,9 @@ namespace CCompiler
         TK_INCLUDE,
         KW_ELSE,
         TK_COLON,
-        OP_ARROW
+        OP_ARROW,
+        TK_COMMENT_LINE,
+        TK_COMMENT_BLOCK,
+        TK_NEGATION
     }
 }

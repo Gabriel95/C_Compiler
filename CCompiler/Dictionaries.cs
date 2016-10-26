@@ -64,6 +64,7 @@ namespace CCompiler
             {"~", TokenTypes.BOP_COMPLIMENT},
             {"^", TokenTypes.BOP_XOR},
             {"&", TokenTypes.BOP_AND},
+            {"!", TokenTypes.TK_NEGATION}
         };
 
         public static readonly Dictionary<string, TokenTypes> TwoLengthOperatorDictionary = new Dictionary<string, TokenTypes>()

@@ -97,6 +97,7 @@ namespace CCompiler
                         {
                             if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                             {
+                                _column--;
                                 _currentPointer--;
                             }
                             return new Token()
@@ -116,42 +117,23 @@ namespace CCompiler
                             state = 2;
                             currentChar = GetCurrentSymbol();
                         }
-                        else if (currentChar.Equals('u') || currentChar.Equals('U') || currentChar.Equals('l') || currentChar.Equals('L'))
-                        {
-                            var startedWithU = currentChar.Equals('u') || currentChar.Equals('U');
-                            lexeme += currentChar;
-                            currentChar = GetCurrentSymbol();
-                            if (startedWithU)
-                            {
-                                if (currentChar.Equals('l') || currentChar.Equals('L'))
-                                {
-                                    lexeme += currentChar;
-                                    currentChar = GetCurrentSymbol();
-                                }
-                            }
-                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
-                            {
-                                _currentPointer--;
-                            }
-                            return new Token()
-                            {
-                                Column = currentColumn,
-                                Lexeme = lexeme,
-                                Line = currentLine,
-                                Type = TokenTypes.NUMBER_LITERAL
-                            };
-
-                        }
                         else if (currentChar.Equals('.'))
                         {
                             lexeme += currentChar;
                             state = 9;
                             currentChar = GetCurrentSymbol();
                         }
+                        else if (currentChar.Equals('e') || currentChar.Equals('E'))
+                        {
+                            lexeme += currentChar;
+                            currentChar = GetCurrentSymbol();
+                            state = 14;
+                        }
                         else
                         {
                             if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                             {
+                                _column--;
                                 _currentPointer--;
                             }
                             return new Token()
@@ -164,7 +146,6 @@ namespace CCompiler
                         }
                         break;
                     case 3:
-
                         if (!currentChar.Equals('~'))
                         {
                             var tempChar = currentChar;
@@ -180,6 +161,13 @@ namespace CCompiler
                                     Type = Dictionaries.TwoLengthOperatorDictionary[lexeme]
                                 };
                             }
+                            if ((lexeme + currentChar).Equals("/*"))
+                            {
+                                state = 13;
+                                lexeme += currentChar;
+                                currentChar = GetCurrentSymbol();
+                                break;
+                            }
                             if (currentChar.Equals(tempChar) || currentChar.Equals('='))
                             {
                                 var isThreeLength = false;
@@ -192,15 +180,39 @@ namespace CCompiler
                                         lexeme += currentChar;
                                         isThreeLength = true;
                                     }
+                                    else
+                                    {
+                                        _column--;
+                                        _currentPointer--;
+                                    }
+                                }
+                                else if (lexeme.Equals("//"))
+                                {
+                                    state = 12;
+                                    currentChar = GetCurrentSymbol();
+                                    break;
+                                }
+                                if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
+                                {
+                                    //_currentPointer--;
                                 }
                                 return new Token()
                                 {
                                     Column = currentColumn,
                                     Line = currentLine,
                                     Lexeme = lexeme,
-                                    Type = isThreeLength ? Dictionaries.ThreeLengthOperatorDictionary[lexeme] : Dictionaries.TwoLengthOperatorDictionary[lexeme]
+                                    Type =
+                                        isThreeLength
+                                            ? Dictionaries.ThreeLengthOperatorDictionary[lexeme]
+                                            : Dictionaries.TwoLengthOperatorDictionary[lexeme]
                                 };
                             }
+                        }
+
+                        if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
+                        {
+                            _column--;
+                            _currentPointer--;
                         }
 
                         return new Token()
@@ -241,6 +253,7 @@ namespace CCompiler
                         {
                             if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                             {
+                                _column--;
                                 _currentPointer--;
                             }
                             return new Token()
@@ -262,57 +275,37 @@ namespace CCompiler
                         {
                             if (lexeme.Equals("0x") || lexeme.Equals("0X"))
                             {
-                                throw new Exception();
+                                _column--;
+                                _currentPointer--;
+                                lexeme = lexeme.Substring(0, lexeme.Length - 1);
+                                if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
+                                {
+                                    _column--;
+                                    _currentPointer--;
+                                }
+                                return new Token()
+                                {
+                                    Column = currentColumn,
+                                    Lexeme = lexeme,
+                                    Line = currentLine,
+                                    Type = TokenTypes.NUMBER_LITERAL
+                                };
                             }
                             state = 2;
 
                         }
                         break;
                     case 7:
-                        if (char.IsDigit(currentChar))
+                        if (currentChar.IsOct())
                         {
                             lexeme += currentChar;
                             currentChar = GetCurrentSymbol();
-                        }
-                        else if (currentChar.Equals('u') || currentChar.Equals('U') || currentChar.Equals('l') || currentChar.Equals('L'))
-                        {
-                            var prev_lexeme = lexeme;
-                            var startedWithU = currentChar.Equals('u') || currentChar.Equals('U');
-                            lexeme += currentChar;
-                            currentChar = GetCurrentSymbol();
-                            if (startedWithU)
-                            {
-                                if (currentChar.Equals('l') || currentChar.Equals('L'))
-                                {
-                                    lexeme += currentChar;
-                                    currentChar = GetCurrentSymbol();
-                                }
-                            }
-                            if (!prev_lexeme.IsOctal())
-                            {
-                                throw new Exception("Invalid Octal");
-                            }
-                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
-                            {
-                                _currentPointer--;
-                            }
-                            return new Token()
-                            {
-                                Column = currentColumn,
-                                Lexeme = lexeme,
-                                Line = currentLine,
-                                Type = TokenTypes.NUMBER_LITERAL
-                            };
-
                         }
                         else
-                        {
-                            if (!lexeme.IsOctal())
-                            {
-                                throw new Exception("Invalid Octal");
-                            }
+                        {                           
                             if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                             {
+                                _column--;
                                 _currentPointer--;
                             }
 
@@ -366,14 +359,52 @@ namespace CCompiler
                             lexeme += currentChar;
                             currentChar = GetCurrentSymbol();
                         }
+                        else if (currentChar == 'f' || currentChar == 'F')
+                        {
+                            lexeme += currentChar;
+                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
+                            {
+                                _column--;
+                                _currentPointer--;
+                            }
+                            return new Token()
+                            {
+                                Column = currentColumn,
+                                Lexeme = lexeme,
+                                Line = currentLine,
+                                Type = TokenTypes.FLOAT_LITERAL
+                            };
+                        }
                         else
                         {
                             if (lexeme.EndsWith("."))
                             {
-                                throw new Exception("Float can't end with \".\"");
+                                _column--;
+                                _currentPointer--;
+                                lexeme = lexeme.Substring(0, lexeme.Length - 1);
+                                if (currentChar != '\0')
+                                {
+                                    _column--;
+                                    _currentPointer--;
+                                }
+                                return new Token()
+                                {
+                                    Column = currentColumn,
+                                    Lexeme = lexeme,
+                                    Line = currentLine,
+                                    Type = TokenTypes.NUMBER_LITERAL
+                                };
+                            }
+                            if (currentChar.Equals('E') || currentChar.Equals('e'))
+                            {
+                                lexeme += currentChar;
+                                currentChar = GetCurrentSymbol();
+                                state = 14;
+                                break;
                             }
                             if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                             {
+                                _column--;
                                 _currentPointer--;
                             }
                             return new Token()
@@ -412,6 +443,10 @@ namespace CCompiler
                         }
                         if (currentChar == '"')
                         {
+                            if (lexeme.Contains("\\r\\n") || lexeme.Contains("\r\n"))
+                            {
+                                throw new Exception("String contains enter " + lexeme);
+                            }
                             lexeme += currentChar;
                             return new Token()
                             {
@@ -427,17 +462,138 @@ namespace CCompiler
                             var temp = currentChar.ToString();
                             currentChar = GetCurrentSymbol();
                             temp += currentChar;
-                            currentChar = GetCurrentSymbol(); ;
+                            currentChar = GetCurrentSymbol();
                             lexeme += temp;
+                            if (lexeme.Contains("\\r\\n") || lexeme.Contains("\r\n"))
+                            {
+                                throw new Exception("String contains enter");
+                            }
                             if (!Dictionaries.EscapeList.Contains(temp))
                             {
-                                throw new Exception();
+                                throw new Exception("Invalid escape char");
                             }
                         }
                         else
                         {
                             lexeme += currentChar;
                             currentChar = GetCurrentSymbol();
+                        }
+                        break;
+                    case 12:
+                        var accum = "";
+                        while (!accum.EndsWith("\\r\\n") && !accum.EndsWith("\r\n") && currentChar != '\0')
+                        {
+                            accum += currentChar;
+                            currentChar = GetCurrentSymbol();
+                        }
+                        if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
+                        {
+                            _column--;
+                            _currentPointer--;
+                        }
+                        return new Token()
+                        {
+                            Column = currentColumn,
+                            Lexeme = lexeme,
+                            Line = currentLine,
+                            Type = TokenTypes.TK_COMMENT_LINE
+                        };
+                    case 13:
+                        var accum2 = "";
+                        while (!accum2.EndsWith("*/") && currentChar != '\0')
+                        {
+                            accum2 += currentChar;
+                            currentChar = GetCurrentSymbol();
+                        }
+                        lexeme += "*/";
+                        return new Token()
+                        {
+                            Column = currentColumn,
+                            Lexeme = lexeme,
+                            Line = currentLine,
+                            Type = TokenTypes.TK_COMMENT_BLOCK
+                        };
+                    case 14:
+                        if (currentChar.Equals('-') || char.IsDigit(currentChar))
+                        {
+                            var temp = currentChar;
+                            currentChar = GetCurrentSymbol();
+                            if (!char.IsDigit(currentChar))
+                            {
+                                _currentPointer-=2;
+                                lexeme = lexeme.Substring(0, lexeme.Length - 1);
+                                if (currentChar != '\0')
+                                {
+                                    _column--;
+                                    _currentPointer--;
+                                }
+                                return new Token()
+                                {
+                                    Column = currentColumn,
+                                    Lexeme = lexeme,
+                                    Line = currentLine,
+                                    Type = TokenTypes.FLOAT_LITERAL
+                                };
+                            }
+                            lexeme += temp;
+                            state = 15;
+                        }
+                        else
+                        {
+                            _column--;
+                            _currentPointer--;
+                            lexeme = lexeme.Substring(0, lexeme.Length - 1);
+                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
+                            {
+                                _column--;
+                                _currentPointer--;
+                            }
+                            return new Token()
+                            {
+                                Column = currentColumn,
+                                Lexeme = lexeme,
+                                Line = currentLine,
+                                Type = TokenTypes.FLOAT_LITERAL
+                            };
+                        }
+                        break;
+                    case 15:
+                        if (char.IsDigit(currentChar))
+                        {
+                            lexeme += currentChar;
+                            currentChar = GetCurrentSymbol();
+                        }
+                        else if (currentChar == 'f' || currentChar == 'F')
+                        {
+                            lexeme += currentChar;
+                            currentChar = GetCurrentSymbol();
+                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
+                            {
+                                _column--;
+                                _currentPointer--;
+                            }
+                            return new Token()
+                            {
+                                Column = currentColumn,
+                                Lexeme = lexeme,
+                                Line = currentLine,
+                                Type = TokenTypes.FLOAT_LITERAL
+                            };
+                        }
+                        else
+                        {
+                            if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
+                            {
+                                _column--;
+                                _currentPointer--;
+                            }
+                            return new Token()
+                            {
+                                Column = currentColumn,
+                                Lexeme = lexeme,
+                                Line = currentLine,
+                                Type = TokenTypes.FLOAT_LITERAL
+                            };
                         }
                         break;
                 }
