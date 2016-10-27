@@ -58,8 +58,8 @@ namespace CCompiler
                             {
                                 Lexeme = lexeme,
                                 Type = TokenTypes.EOF,
-                                Column = currentColumn,
-                                Line = currentLine
+                                Column = _column - lexeme.Length,
+                                Line = _line
                             };
                         }
                         else if (char.IsWhiteSpace(currentChar))
@@ -99,12 +99,15 @@ namespace CCompiler
                             {
                                 _column--;
                                 _currentPointer--;
+                            }else if (currentChar == '\r')
+                            {
+                                _column--;
                             }
                             return new Token()
                             {
-                                Column = currentColumn,
+                                Column = _column - lexeme.Length,
                                 Lexeme = lexeme,
-                                Line = currentLine,
+                                Line = _line,
                                 Type = Dictionaries.KeyWordDictionary.ContainsKey(lexeme) ? Dictionaries.KeyWordDictionary[lexeme] : TokenTypes.ID
                             };
                         }
@@ -138,25 +141,27 @@ namespace CCompiler
                             }
                             return new Token()
                             {
-                                Column = currentColumn,
+                                Column = _column - lexeme.Length,
                                 Lexeme = lexeme,
-                                Line = currentLine,
+                                Line = _line,
                                 Type = TokenTypes.NUMBER_LITERAL
                             };
                         }
                         break;
                     case 3:
+                        var prevColumn = _column;
                         if (!currentChar.Equals('~'))
                         {
                             var tempChar = currentChar;
+                            
                             currentChar = GetCurrentSymbol();
                             if ((lexeme + currentChar).Equals("->"))
                             {
                                 lexeme += currentChar;
                                 return new Token()
                                 {
-                                    Column = currentColumn,
-                                    Line = currentLine,
+                                    Column = _column - lexeme.Length,
+                                    Line = _line,
                                     Lexeme = lexeme,
                                     Type = Dictionaries.TwoLengthOperatorDictionary[lexeme]
                                 };
@@ -198,8 +203,8 @@ namespace CCompiler
                                 }
                                 return new Token()
                                 {
-                                    Column = currentColumn,
-                                    Line = currentLine,
+                                    Column = _column - lexeme.Length,
+                                    Line = _line,
                                     Lexeme = lexeme,
                                     Type =
                                         isThreeLength
@@ -208,7 +213,7 @@ namespace CCompiler
                                 };
                             }
                         }
-
+                        currentChar = GetCurrentSymbol(); 
                         if (!char.IsWhiteSpace(currentChar) && currentChar != '\0')
                         {
                             _column--;
@@ -217,17 +222,17 @@ namespace CCompiler
 
                         return new Token()
                         {
-                            Column = currentColumn,
+                            Column = prevColumn - lexeme.Length,
                             Lexeme = lexeme,
-                            Line = currentLine,
+                            Line = _line,
                             Type = Dictionaries.SingleLengthOperatorDictionary[lexeme]
                         };
                     case 4:
                         return new Token()
                         {
-                            Column = currentColumn,
+                            Column = _column - lexeme.Length,
                             Lexeme = lexeme,
-                            Line = currentLine,
+                            Line = _line,
                             Type = Dictionaries.SymbolDictionary[lexeme]
                         };
                     case 5:
@@ -258,9 +263,9 @@ namespace CCompiler
                             }
                             return new Token()
                             {
-                                Column = currentColumn,
+                                Column = _column - lexeme.Length,
                                 Lexeme = lexeme,
-                                Line = currentLine,
+                                Line = _line,
                                 Type = TokenTypes.NUMBER_LITERAL
                             };
                         }
@@ -285,9 +290,9 @@ namespace CCompiler
                                 }
                                 return new Token()
                                 {
-                                    Column = currentColumn,
+                                    Column = _column - lexeme.Length,
                                     Lexeme = lexeme,
-                                    Line = currentLine,
+                                    Line = _line,
                                     Type = TokenTypes.NUMBER_LITERAL
                                 };
                             }
@@ -311,9 +316,9 @@ namespace CCompiler
 
                             return new Token()
                             {
-                                Column = currentColumn,
+                                Column = _column - lexeme.Length,
                                 Lexeme = lexeme,
-                                Line = currentLine,
+                                Line = _line,
                                 Type = TokenTypes.NUMBER_LITERAL
                             };
                         }
@@ -342,9 +347,9 @@ namespace CCompiler
                                     lexeme += currentChar;
                                     return new Token()
                                     {
-                                        Column = currentColumn,
+                                        Column = _column - lexeme.Length,
                                         Lexeme = lexeme,
-                                        Line = currentLine,
+                                        Line = _line,
                                         Type = TokenTypes.TYPE_DATE
                                     };
                                 }
@@ -369,9 +374,9 @@ namespace CCompiler
                             }
                             return new Token()
                             {
-                                Column = currentColumn,
+                                Column = _column - lexeme.Length,
                                 Lexeme = lexeme,
-                                Line = currentLine,
+                                Line = _line,
                                 Type = TokenTypes.FLOAT_LITERAL
                             };
                         }
@@ -389,9 +394,9 @@ namespace CCompiler
                                 }
                                 return new Token()
                                 {
-                                    Column = currentColumn,
+                                    Column = _column - lexeme.Length,
                                     Lexeme = lexeme,
-                                    Line = currentLine,
+                                    Line = _line,
                                     Type = TokenTypes.NUMBER_LITERAL
                                 };
                             }
@@ -409,9 +414,9 @@ namespace CCompiler
                             }
                             return new Token()
                             {
-                                Column = currentColumn,
+                                Column = _column - lexeme.Length,
                                 Lexeme = lexeme,
-                                Line = currentLine,
+                                Line = _line,
                                 Type = TokenTypes.FLOAT_LITERAL
                             };
                         }
@@ -425,9 +430,9 @@ namespace CCompiler
                             {
                                 return new Token()
                                 {
-                                    Column = currentColumn,
+                                    Column = _column - lexeme.Length,
                                     Lexeme = lexeme,
-                                    Line = currentLine,
+                                    Line = _line,
                                     Type = TokenTypes.CHAR_LITERAL
                                 };
                             }
@@ -450,9 +455,9 @@ namespace CCompiler
                             lexeme += currentChar;
                             return new Token()
                             {
-                                Column = currentColumn,
+                                Column = _column - lexeme.Length,
                                 Lexeme = lexeme,
-                                Line = currentLine,
+                                Line = _line,
                                 Type = TokenTypes.STRING_LITERAL
                             };
 
@@ -493,9 +498,9 @@ namespace CCompiler
                         }
                         return new Token()
                         {
-                            Column = currentColumn,
+                            Column = _column - lexeme.Length,
                             Lexeme = lexeme,
-                            Line = currentLine,
+                            Line = _line,
                             Type = TokenTypes.TK_COMMENT_LINE
                         };
                     case 13:
@@ -508,9 +513,9 @@ namespace CCompiler
                         lexeme += "*/";
                         return new Token()
                         {
-                            Column = currentColumn,
+                            Column = _column - lexeme.Length,
                             Lexeme = lexeme,
-                            Line = currentLine,
+                            Line = _line,
                             Type = TokenTypes.TK_COMMENT_BLOCK
                         };
                     case 14:
@@ -518,9 +523,10 @@ namespace CCompiler
                         {
                             var temp = currentChar;
                             currentChar = GetCurrentSymbol();
-                            if (!char.IsDigit(currentChar))
+                            if (temp.Equals('-')&&!char.IsDigit(currentChar))
                             {
                                 _currentPointer-=2;
+
                                 lexeme = lexeme.Substring(0, lexeme.Length - 1);
                                 if (currentChar != '\0')
                                 {
@@ -529,10 +535,10 @@ namespace CCompiler
                                 }
                                 return new Token()
                                 {
-                                    Column = currentColumn,
+                                    Column = _column - lexeme.Length,
                                     Lexeme = lexeme,
-                                    Line = currentLine,
-                                    Type = TokenTypes.FLOAT_LITERAL
+                                    Line = _line,
+                                    Type = lexeme.Contains(".") ? TokenTypes.FLOAT_LITERAL : TokenTypes.NUMBER_LITERAL
                                 };
                             }
                             lexeme += temp;
@@ -550,9 +556,9 @@ namespace CCompiler
                             }
                             return new Token()
                             {
-                                Column = currentColumn,
+                                Column = _column - lexeme.Length,
                                 Lexeme = lexeme,
-                                Line = currentLine,
+                                Line = _line,
                                 Type = TokenTypes.FLOAT_LITERAL
                             };
                         }
@@ -574,9 +580,9 @@ namespace CCompiler
                             }
                             return new Token()
                             {
-                                Column = currentColumn,
+                                Column = _column - lexeme.Length,
                                 Lexeme = lexeme,
-                                Line = currentLine,
+                                Line = _line,
                                 Type = TokenTypes.FLOAT_LITERAL
                             };
                         }
@@ -589,9 +595,9 @@ namespace CCompiler
                             }
                             return new Token()
                             {
-                                Column = currentColumn,
+                                Column = _column - lexeme.Length,
                                 Lexeme = lexeme,
-                                Line = currentLine,
+                                Line = _line,
                                 Type = TokenTypes.FLOAT_LITERAL
                             };
                         }

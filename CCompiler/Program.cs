@@ -40,7 +40,73 @@ namespace CCompiler
 // cout<<""Total Prime Number Between Range ""<<startNum<<"" to ""<<endNum<<"" = ""<<found<<endl;
 // return 1;
 //}");
-            var lex = new Lexer("12a");
+            var lex = new Lexer(@"(
+)
+{
+}
+[
+]
+,
+.
+;
+:
+print
+scan
+int
+float
+char
+bool
+string
+date
+enum
+struct
+if
+while
+do
+for
+switch
+foreach
+break
+continue
+void
+else
+false
+true
+#include
++
+-
+*
+/
+%
+=
+<
+>
+|
+~
+^
+&
+!
+==
+!=
+>=
+<=
+&&
+||
+<<
+>>
++=
+-=
+*=
+/=
+%=
+&=
+^=
+|=
+++
+--
+->
+<<=
+>>=");
             var currentToken = lex.GetNextToken();
             while (currentToken.Type != TokenTypes.EOF)
             {
